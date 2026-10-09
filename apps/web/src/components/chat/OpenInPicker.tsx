@@ -38,6 +38,8 @@ import {
   FinderIcon,
   Icon,
   KiroIcon,
+  SublimeMergeIcon,
+  SublimeTextIcon,
   TraeIcon,
   VisualStudioCode,
   VisualStudioCodeInsiders,
@@ -118,6 +120,11 @@ export const resolveOpenInOptions = (
       kind: "brand",
     },
     {
+      Icon: SublimeTextIcon,
+      value: "sublime-text",
+      kind: "brand",
+    },
+    {
       Icon: AntigravityIcon,
       value: "antigravity",
       kind: "brand",
@@ -180,6 +187,11 @@ export const resolveOpenInOptions = (
     {
       Icon: WebStormIcon,
       value: "webstorm",
+      kind: "brand",
+    },
+    {
+      Icon: SublimeMergeIcon,
+      value: "sublime-merge",
       kind: "brand",
     },
     {

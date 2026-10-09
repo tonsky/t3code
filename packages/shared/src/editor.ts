@@ -44,6 +44,7 @@ export const resolveEditorCommand = Effect.fn("editor.resolveEditorCommand")(fun
   const names = installNames[editor.id] ?? [editor.label];
   const command = editor.commands[0];
   const jetbrains = editor.launchStyle === "line-column";
+  const sublime = editor.id === "sublime-text" || editor.id === "sublime-merge";
   const candidates: string[] = [];
 
   if (platform === "darwin") {
@@ -64,10 +65,12 @@ export const resolveEditorCommand = Effect.fn("editor.resolveEditorCommand")(fun
         candidates.push(
           ...(jetbrains || editor.id === "zed"
             ? [path.join(contents, "MacOS", editor.id === "zed" ? "cli" : command)]
-            : [
-                path.join(contents, "Resources/app/bin", command),
-                path.join(contents, "Resources/app/bin/code"),
-              ]),
+            : sublime
+              ? [path.join(contents, "SharedSupport/bin", command)]
+              : [
+                  path.join(contents, "Resources/app/bin", command),
+                  path.join(contents, "Resources/app/bin/code"),
+                ]),
         );
       }
     }
@@ -116,6 +119,7 @@ export const resolveEditorCommand = Effect.fn("editor.resolveEditorCommand")(fun
             path.join(root, name, "zed.exe"),
           );
         }
+        if (sublime) candidates.push(path.join(root, name, `${command}.exe`));
       }
     }
   } else if (platform === "linux") {

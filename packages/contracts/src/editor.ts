@@ -1,7 +1,12 @@
 import * as Schema from "effect/Schema";
 import { TrimmedNonEmptyString } from "./baseSchemas.ts";
 
-export const EditorLaunchStyle = Schema.Literals(["direct-path", "goto", "line-column"]);
+export const EditorLaunchStyle = Schema.Literals([
+  "direct-path",
+  "goto",
+  "line-column",
+  "path-only",
+]);
 export type EditorLaunchStyle = typeof EditorLaunchStyle.Type;
 
 type EditorDefinition = {
@@ -65,6 +70,8 @@ export const EDITORS = [
     launchStyle: "direct-path",
     remoteScheme: "zed",
   },
+  // `subl` takes `file:line:column` as is.
+  { id: "sublime-text", label: "Sublime Text", commands: ["subl"], launchStyle: "direct-path" },
   {
     id: "antigravity",
     label: "Antigravity",
@@ -157,6 +164,10 @@ export const EDITORS = [
     launchStyle: "line-column",
     jetbrainsProductCode: "WS",
   },
+  // A Git client, not an editor: `smerge` opens the repository at a path and
+  // has no notion of a file position. Listed after the editors so it is never
+  // the default pick for opening a file.
+  { id: "sublime-merge", label: "Sublime Merge", commands: ["smerge"], launchStyle: "path-only" },
   { id: "file-manager", label: "File Manager", commands: null, launchStyle: "direct-path" },
 ] as const satisfies ReadonlyArray<EditorDefinition>;
 

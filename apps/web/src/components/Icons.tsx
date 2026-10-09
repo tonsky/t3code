@@ -634,6 +634,25 @@ export const Zed: Icon = (props) => {
   );
 };
 
+export const SublimeTextIcon: Icon = (props) => (
+  <svg {...props} viewBox="0 0 200 200" fill="none">
+    <rect width="200" height="200" rx="46" fill="#4D4D4E" />
+    <path
+      transform="translate(40 40) scale(5)"
+      fill="#FF9800"
+      d="M20.953.004a.397.397 0 0 0-.18.017L3.225 5.585c-.175.055-.323.214-.402.398a.42.42 0 0 0-.06.22v5.726a.42.42 0 0 0 .06.22c.079.183.227.341.402.397l7.454 2.364-7.454 2.363c-.255.08-.463.374-.463.655v5.688c0 .282.208.444.463.363l17.55-5.565c.237-.075.426-.336.452-.6.003-.022.013-.04.013-.065V12.06c0-.281-.208-.575-.463-.656L13.4 9.065l7.375-2.339c.255-.08.462-.375.462-.656V.384c0-.211-.117-.355-.284-.38z"
+    />
+  </svg>
+);
+
+export const SublimeMergeIcon: Icon = (props) => (
+  <svg {...props} viewBox="0 0 200 200" fill="none">
+    <rect width="200" height="200" rx="46" fill="#4D4D4E" />
+    <path fill="#8FDADC" d="M44 66 66 42 132 88 104 112Z" />
+    <path fill="#1DE0DF" d="M40 150 124 86H170L190 104 170 122H132L64 176Z" />
+  </svg>
+);
+
 export const OpenAI: Icon = ({ className, ...props }) => (
   <svg
     {...props}

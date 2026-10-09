@@ -961,6 +961,18 @@ for (const { platform, installPath, editor, args } of [
     args: ["/workspace with spaces/file.ts:12:4"],
   },
   {
+    platform: "darwin",
+    installPath: "Applications/Sublime Text.app/Contents/SharedSupport/bin/subl",
+    editor: "sublime-text",
+    args: ["/workspace with spaces/file.ts:12:4"],
+  },
+  {
+    platform: "darwin",
+    installPath: "Applications/Sublime Merge.app/Contents/SharedSupport/bin/smerge",
+    editor: "sublime-merge",
+    args: ["/workspace with spaces/file.ts"],
+  },
+  {
     platform: "win32",
     installPath: "Programs/Cursor/resources/app/bin/cursor.cmd",
     editor: "cursor",
@@ -1000,6 +1012,24 @@ for (const { platform, installPath, editor, args } of [
     platform: "linux",
     installPath: ".local/bin/zed",
     editor: "zed",
+    args: ["/workspace with spaces/file.ts:12:4"],
+  },
+  {
+    platform: "win32",
+    installPath: "Programs/Sublime Text/subl.exe",
+    editor: "sublime-text",
+    args: ["/workspace with spaces/file.ts:12:4"],
+  },
+  {
+    platform: "win32",
+    installPath: "Programs/Sublime Merge/smerge.exe",
+    editor: "sublime-merge",
+    args: ["/workspace with spaces/file.ts"],
+  },
+  {
+    platform: "linux",
+    installPath: ".local/bin/subl",
+    editor: "sublime-text",
     args: ["/workspace with spaces/file.ts:12:4"],
   },
 ] as const) {
