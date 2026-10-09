@@ -5,12 +5,14 @@ import {
   gitHubRoutingPermissionFor,
   type GitHubRoutingPermission,
 } from "@t3tools/client-runtime/connection";
+import { resolveEnvironmentLabel } from "@t3tools/contracts";
 import { useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 
 import { AppText as Text } from "../../components/AppText";
 import { SymbolView } from "../../components/AppSymbol";
 import { environmentCatalog } from "../../connection/catalog";
+import { environmentPresentations } from "../../state/presentation";
 import { useAtomCommand } from "../../state/use-atom-command";
 import { SettingsSection } from "../settings/components/SettingsSection";
 
@@ -35,6 +37,7 @@ const options: ReadonlyArray<{
 export function GitHubRoutingSettings() {
   const catalog = useAtomValue(environmentCatalog.catalogValueAtom);
   const permissions = useAtomValue(environmentCatalog.githubRoutingPermissionsValueAtom);
+  const presentations = useAtomValue(environmentPresentations.presentationsAtom);
   const update = useAtomCommand(environmentCatalog.setGitHubRoutingPermission);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -45,21 +48,23 @@ export function GitHubRoutingSettings() {
       <SettingsSection title="GitHub routing">
         {[...catalog.entries.values()].map((entry) => {
           const environmentId = entry.target.environmentId;
+          const label = resolveEnvironmentLabel(
+            presentations.get(environmentId)?.serverConfig ?? null,
+            entry.target.label,
+          );
           const selected = gitHubRoutingPermissionFor(entry, permissions);
           const disabled = !catalog.isReady || saving || gitHubRoutingConnectionKey(entry) === null;
           return (
             <View key={environmentId}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`${entry.target.label} GitHub routing`}
+                accessibilityLabel={`${label} GitHub routing`}
                 accessibilityState={{ expanded: expanded === environmentId }}
                 className="flex-row items-center gap-3 p-4"
                 onPress={() => setExpanded(expanded === environmentId ? null : environmentId)}
               >
                 <View className="min-w-0 flex-1 gap-0.5">
-                  <Text className="text-base font-t3-bold text-foreground">
-                    {entry.target.label}
-                  </Text>
+                  <Text className="text-base font-t3-bold text-foreground">{label}</Text>
                   <Text className="text-xs text-foreground-muted" numberOfLines={1}>
                     {connectionCatalogDisplayUrl(entry) ?? "T3 Connect"}
                   </Text>

@@ -203,6 +203,9 @@ export const ExecutionEnvironmentCapabilities = Schema.Struct({
       setting. Older servers drop the key on write, so clients show the
       picker inert rather than offering a choice that would never stick. */
   environmentIcon: Schema.optionalKey(Schema.Boolean),
+  /** Server persists the `environmentName` setting. Older servers drop the
+      key on write, so clients keep the rename action inert there. */
+  environmentName: Schema.optionalKey(Schema.Boolean),
   /** The desktop app supervising this server can be driven over RPC:
       server.updateServer runs its check -> download -> relaunch. Absent on
       desktop servers whose app predates the remote trigger, where clients

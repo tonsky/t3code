@@ -141,6 +141,29 @@ describe("environment summary subscriptions", () => {
     }
   });
 
+  it("shows the environment's server-side name over its saved label", () => {
+    const h = harness();
+    try {
+      h.registry.set(h.configs(FIRST), {
+        ...config(),
+        settings: { environmentName: "Studio" },
+      } as ServerConfig);
+      expect(h.registry.get(h.identitiesAtom)).toEqual([
+        { environmentId: FIRST, label: "Studio" },
+        { environmentId: SECOND, label: "second" },
+      ]);
+      expect(h.registry.get(h.environmentsAtom)[0]?.environmentLabel).toBe("Studio");
+      h.registry.set(h.configs(FIRST), {
+        ...config(),
+        settings: { environmentName: "" },
+      } as ServerConfig);
+      expect(h.registry.get(h.identitiesAtom)[0]?.label).toBe("first");
+      expect(h.registry.get(h.environmentsAtom)[0]?.environmentLabel).toBe("first");
+    } finally {
+      h.registry.dispose();
+    }
+  });
+
   it("updates machine icons and preserves cached icons for disabled environments", () => {
     const h = harness();
     try {

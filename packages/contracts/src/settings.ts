@@ -872,6 +872,8 @@ export const SourceControlWritingStyleSettings = Schema.Struct({
 });
 export type SourceControlWritingStyleSettings = typeof SourceControlWritingStyleSettings.Type;
 
+export const ENVIRONMENT_NAME_MAX_LENGTH = 64;
+
 export const BranchNamingMode = Schema.Literals(["static", "semantic", "custom"]);
 export type BranchNamingMode = typeof BranchNamingMode.Type;
 
@@ -1178,6 +1180,15 @@ export const ServerSettings = Schema.Struct({
     Schema.withDecodingDefault(Effect.succeed(null)),
   ),
   /**
+   * The name clients show for this environment. Empty means "use the label
+   * the client already has", which is the host name the server detected.
+   * Lives on the server for the same reason as the icon: a rename on one
+   * device shows up on every device.
+   */
+  environmentName: TrimmedString.check(Schema.isMaxLength(ENVIRONMENT_NAME_MAX_LENGTH)).pipe(
+    Schema.withDecodingDefault(Effect.succeed("")),
+  ),
+  /**
    * Null means inherit: the repository's t3.json, then "local". The old
    * default "local" was never persisted (defaults are stripped on write), so
    * it now decodes as inherit, which resolves the same way because the old
@@ -1459,6 +1470,9 @@ export const ServerSettingsPatch = Schema.Struct({
   providerHealthRefreshInterval: Schema.optionalKey(Schema.DurationFromMillis),
   backgroundActivityProfile: Schema.optionalKey(BackgroundActivityProfile),
   environmentIcon: Schema.optionalKey(Schema.NullOr(EnvironmentMachineKind)),
+  environmentName: Schema.optionalKey(
+    TrimmedString.check(Schema.isMaxLength(ENVIRONMENT_NAME_MAX_LENGTH)),
+  ),
   defaultThreadEnvMode: Schema.optionalKey(Schema.NullOr(ThreadEnvMode)),
   newWorktreesStartFromOrigin: Schema.optionalKey(Schema.Boolean),
   worktreeSubmodules: Schema.optionalKey(Schema.NullOr(WorktreeSubmodules)),

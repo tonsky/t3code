@@ -8,6 +8,7 @@ import {
   ClientSettingsPatch,
   ClaudeSettings,
   DEFAULT_SERVER_SETTINGS,
+  ENVIRONMENT_NAME_MAX_LENGTH,
   resolveProviderInstanceEnabled,
   ServerSettings,
   ServerSettingsPatch,
@@ -969,6 +970,21 @@ describe("ServerSettingsPatch string normalization", () => {
     });
 
     expect(encoded.addProjectBaseDirectory).toBe("~/Development");
+  });
+});
+
+describe("ServerSettings environment name", () => {
+  it("defaults to empty, which means the environment's own label", () => {
+    expect(decodeServerSettings({}).environmentName).toBe("");
+  });
+
+  it("trims a patched name and rejects one longer than the limit", () => {
+    expect(decodeServerSettingsPatch({ environmentName: "  Studio  " }).environmentName).toBe(
+      "Studio",
+    );
+    expect(() =>
+      decodeServerSettingsPatch({ environmentName: "x".repeat(ENVIRONMENT_NAME_MAX_LENGTH + 1) }),
+    ).toThrow();
   });
 });
 

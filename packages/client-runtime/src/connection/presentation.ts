@@ -1,4 +1,4 @@
-import type { ServerConfig } from "@t3tools/contracts";
+import { resolveEnvironmentLabel, type ServerConfig } from "@t3tools/contracts";
 import * as Option from "effect/Option";
 
 import type { ConnectionCatalogEntry } from "./catalog.ts";
@@ -24,6 +24,16 @@ export interface EnvironmentPresentation {
   readonly entry: ConnectionCatalogEntry;
   readonly connection: EnvironmentConnectionPresentation;
   readonly serverConfig: ServerConfig | null;
+}
+
+/**
+ * The name to show for an environment. Prefer this over `entry.target.label`,
+ * which is only the label saved when the environment was added.
+ */
+export function environmentDisplayLabel(
+  environment: Pick<EnvironmentPresentation, "entry" | "serverConfig">,
+): string {
+  return resolveEnvironmentLabel(environment.serverConfig, environment.entry.target.label);
 }
 
 export function presentConnectionState(

@@ -101,6 +101,15 @@ shown there apply only to the route marked **In use**; other routes are not
 checked. Direct pairing and T3 Connect have separate sessions and may grant
 different permissions.
 
+### Rename a machine
+
+On web and desktop, choose **Rename** in the machine's menu in
+**Settings → Connections**. On mobile, edit its label under
+**Settings → Environments**. The name is saved on the machine, so every device
+connected to it shows the new name. Clear the name to go back to the machine's
+own. Renaming needs a connection that can change the machine's settings; on
+mobile, a machine reached only through T3 Connect cannot be renamed.
+
 ### Balance new threads across machines
 
 Auto balance is off by default. On web and desktop, enable it in

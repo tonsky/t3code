@@ -735,6 +735,19 @@ export function resolveEnvironmentMachineKind(
   return config?.settings?.environmentIcon ?? config?.environment.platform.machine ?? "server";
 }
 
+/**
+ * The name an environment should be shown under: the user's rename, else
+ * `fallback`, the label this client saved when it first reached the
+ * environment. Like the icon, a rename is a setting, so it only applies once
+ * a config has been seen; cached configs keep it across reconnects.
+ */
+export function resolveEnvironmentLabel(
+  config: { readonly settings?: Pick<ServerSettings, "environmentName"> } | null,
+  fallback: string,
+): string {
+  return config?.settings?.environmentName || fallback;
+}
+
 const ServerUpsertKeybindingReplaceTarget = Schema.Struct({
   key: KeybindingValue,
   command: KeybindingCommand,

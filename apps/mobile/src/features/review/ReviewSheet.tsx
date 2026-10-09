@@ -1,3 +1,4 @@
+import { environmentDisplayLabel } from "@t3tools/client-runtime/connection";
 import type { EnvironmentId, ThreadId } from "@t3tools/contracts";
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import { nativeHeaderScrollEdgeEffects } from "../../native/StackHeader";
@@ -740,7 +741,11 @@ export function ReviewSheet(props: ReviewSheetProps) {
           {showConnectionNotice ? (
             <View className="flex-1" style={{ paddingTop: topContentInset }}>
               <EnvironmentConnectionNotice
-                environmentLabel={environment.presentation?.entry.target.label ?? "Environment"}
+                environmentLabel={
+                  environment.presentation
+                    ? environmentDisplayLabel(environment.presentation)
+                    : "Environment"
+                }
                 connection={
                   environment.presentation?.connection ?? {
                     phase: "available",

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vite-plus/test";
 
 import { ExecutionEnvironmentDescriptor } from "./environment.ts";
 import {
+  resolveEnvironmentLabel,
   resolveEnvironmentMachineKind,
   ServerConfig,
   ServerObservability,
@@ -208,6 +209,22 @@ describe("ServerObservability", () => {
 
     expect(parsed.otlpLogsEnabled).toBe(false);
     expect(parsed.otlpLogsUrl).toBeUndefined();
+  });
+});
+
+describe("resolveEnvironmentLabel", () => {
+  const decodeSettings = Schema.decodeUnknownSync(ServerSettings);
+
+  it("prefers the user's rename over the saved label", () => {
+    expect(
+      resolveEnvironmentLabel({ settings: decodeSettings({ environmentName: "Studio" }) }, "Box"),
+    ).toBe("Studio");
+  });
+
+  it("keeps the saved label when nothing is set, on older servers, and before connect", () => {
+    expect(resolveEnvironmentLabel({ settings: decodeSettings({}) }, "Box")).toBe("Box");
+    expect(resolveEnvironmentLabel({}, "Box")).toBe("Box");
+    expect(resolveEnvironmentLabel(null, "Box")).toBe("Box");
   });
 });
 

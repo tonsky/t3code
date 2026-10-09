@@ -3,12 +3,13 @@ import {
   RelayConnectionRegistration,
   RelayConnectionTarget,
 } from "@t3tools/client-runtime/connection";
-import type { EnvironmentId } from "@t3tools/contracts";
+import { AuthSettingsWriteScope, type EnvironmentId } from "@t3tools/contracts";
 import type {
   RelayClientEnvironmentRecord,
   RelayEnvironmentStatusResponse,
 } from "@t3tools/contracts/relay";
 import * as Option from "effect/Option";
+import { AsyncResult } from "effect/reactivity";
 import { useCallback, useMemo } from "react";
 
 import { environmentCatalog } from "../../connection/catalog";
@@ -16,8 +17,11 @@ import {
   connectPairingUrl as connectPairingUrlAtom,
   updateBearerConnection,
 } from "../../connection/onboarding";
+import { appAtomRegistry } from "../../state/atom-registry";
 import { useWorkspaceEnvironments } from "../../state/workspace";
 import { relayEnvironmentDiscovery } from "../../state/relay";
+import { serverEnvironment } from "../../state/server";
+import { readEnvironmentScope } from "../../state/session";
 import { useAtomCommand } from "../../state/use-atom-command";
 import { relayManagedEnvironmentIds } from "./environmentSections";
 
@@ -36,6 +40,9 @@ export function useConnectionController() {
     reportFailure: false,
   });
   const updateBearer = useAtomCommand(updateBearerConnection, { reportFailure: false });
+  const updateSettings = useAtomCommand(serverEnvironment.updateSettings, {
+    reportFailure: false,
+  });
   const registerEnvironment = useAtomCommand(environmentCatalog.register, "environment register");
   const removeEnvironmentMutation = useAtomCommand(environmentCatalog.remove, "environment remove");
   const retryEnvironmentMutation = useAtomCommand(environmentCatalog.retryNow, "environment retry");
@@ -102,16 +109,38 @@ export function useConnectionController() {
     [setEnvironmentEnabledMutation],
   );
   const updateEnvironment = useCallback(
-    (
+    async (
       environmentId: EnvironmentId,
       updates: { readonly label: string; readonly displayUrl: string },
-    ) =>
-      updateBearer({
+    ) => {
+      // The name every device shows is a server setting, so a new label goes
+      // there first, while the connection is up: saving the route below
+      // restarts it. A server that cannot keep a name, or one this device
+      // cannot reach or configure, only gets the label saved on this device.
+      const current = connectedEnvironments.find(
+        (environment) => environment.environmentId === environmentId,
+      );
+      if (
+        updates.label !== "" &&
+        current?.connectionState === "connected" &&
+        updates.label !== current.environmentLabel &&
+        appAtomRegistry.get(serverEnvironment.configValueAtom(environmentId))?.environment
+          .capabilities.environmentName === true &&
+        readEnvironmentScope(environmentId, AuthSettingsWriteScope)
+      ) {
+        const renamed = await updateSettings({
+          environmentId,
+          input: { patch: { environmentName: updates.label } },
+        });
+        if (AsyncResult.isFailure(renamed)) return renamed;
+      }
+      return updateBearer({
         environmentId,
         label: updates.label,
         httpBaseUrl: updates.displayUrl,
-      }),
-    [updateBearer],
+      });
+    },
+    [connectedEnvironments, updateBearer, updateSettings],
   );
 
   return {
