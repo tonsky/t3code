@@ -84,7 +84,7 @@ export function projectThreadAwarenessV2(
   };
 }
 
-function resolveThreadAwarenessPhaseV2(
+export function resolveThreadAwarenessPhaseV2(
   thread: ProjectThreadAwarenessV2Input["thread"],
 ): AgentAwarenessPhase | null {
   if (thread.pendingRuntimeRequest?.kind === "user_input") {
